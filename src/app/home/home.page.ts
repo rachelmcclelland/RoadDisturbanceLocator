@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation/ngx'; 
 import { HttpClient} from '@angular/common/http';
 import { RequestOptions, RequestMethod } from '@angular/http';
@@ -9,6 +9,10 @@ import { RequestOptions, RequestMethod } from '@angular/http';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+
+  @ViewChild("latitude") latitude;
+
+  @ViewChild("longitude") longitude;
   public items : Array<any> = [];
 
   options : GeolocationOptions;
@@ -32,8 +36,8 @@ export class HomePage {
         this.currentPos = pos;      
         console.log(pos);
     //    console.log(pos.coords.latitude, pos.coords.longitude);
-   // this.load();
-   this.sendData(pos.coords.longitude, pos.coords.latitude);
+    this.load();
+    this.sendData(pos.coords.latitude, pos.coords.longitude);
 
     },(err : PositionError)=>{
         console.log("error : " + err.message);
@@ -41,11 +45,12 @@ export class HomePage {
   }
 
   load(){
-
+    
     this.http.get('http://localhost/dbconnect.php').subscribe((data : any) =>
     {
        console.dir(data);
        this.items = data;
+       
     },
     (error : any) =>
     {
@@ -56,11 +61,43 @@ export class HomePage {
 
   }
 
-  sendData(longitude, latitude){
-      this.http.post('http://localhost/getData.php').subscribe
+  sendData(lat, long){
+
+    let postData = {
+      longitude: long,
+      latitude: lat
+    }
+    this.http.post("http://localhost/getData.php", postData)
+      .subscribe(data => {
+        console.log(lat, long);
+       }, error => {
+        console.log(error);
+      });
   }
 
-/*   sendPostRequest() {
+/*   
+
+this.http.post(‘http://ionicdon.com/mobile/post_data.php’,data, options)
+
+   .map(res => res.json())
+
+   .subscribe(res => {
+
+  
+
+    loader.dismiss()
+
+   if(res==”Post successfull”){
+
+     let alert = this.alertCtrl.create({
+
+       title:”CONGRATS”,
+
+       subTitle:(res),
+
+       buttons: [‘OK’]
+
+       });sendPostRequest() {
     var head = new Headers();
     head.append("Accept", 'application/json');
     head.append('Content-Type', 'application/json' );
