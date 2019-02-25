@@ -29,15 +29,13 @@ export class DataService {
     }
 
     sendData(lat, long){
-        let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options 	: any		= { "key" : "create", "latitude" : lat, "longitude" : long },
-            url       : any      	= this.baseURI + "sendData.php";
+        let headers : any = new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options : any = { "key" : "create", "latitude" : lat, "longitude" : long },
+            url : any = this.baseURI + "sendData.php";
     
         this.http.post(url, JSON.stringify(options), headers)
         .subscribe((data : any) =>
         {
-           // If the request was successful notify the user
-    //this.sendNotification(`Congratulations the technology: ${name} was successfully added`);
           console.log("lat and long was sent to the database");
         },
         (error : any) =>
