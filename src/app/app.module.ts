@@ -12,6 +12,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { Geolocation } from '@ionic-native/geolocation/ngx'; 
 import { HttpClientModule } from '@angular/common/http';
 
+import { LoginService } from '../app/services/login.service';
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -26,6 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
     StatusBar,
     SplashScreen,
     HttpClientModule,
+    LoginService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
