@@ -14,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { LoginService } from '../app/services/login.service';
 
-
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

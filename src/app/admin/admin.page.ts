@@ -19,9 +19,9 @@ export class AdminPage implements OnInit {
   }
 
   signIn(){
-   // this.login.loginState = this.service.validateLogin(this.username, this.password);
    this.service.validateLogin(this.username, this.password);
+   //this.service.validateLogin(this.username, this.password);
 
-    //console.log(this.login.loginState);
+   console.log(this.login.loginState);
   }
 }

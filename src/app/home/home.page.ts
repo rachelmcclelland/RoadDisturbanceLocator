@@ -1,10 +1,10 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation/ngx'; 
-import { HttpClient, HttpHeaders} from '@angular/common/http';
-import { RequestOptions, RequestMethod } from '@angular/http';
+import { HttpClient} from '@angular/common/http';
 import {DataService} from '../services/data.service';
-import { Variable } from '@angular/compiler/src/render3/r3_ast';
-import { parse } from 'querystring';
+import { LoginService } from '../services/login.service';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { AlertController } from '@ionic/angular';
 
 declare var google;
 
@@ -22,12 +22,17 @@ export class HomePage {
   long : any;
   accMarkers: any;
   potMarkers: any;
+  markerCluster: any;
+  markers :any[];
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
+  infoWindows: any;
 
-  constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService) {
-
+  constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService, 
+    public login:LoginService, private alertCtrl: AlertController) 
+  {
+      this.infoWindows = [];
   }
 
   ionViewDidEnter(){
@@ -141,17 +146,29 @@ export class HomePage {
             animation: google.maps.Animation.DROP,
             draggable:true,
             position: latLng,
-            icon: '../../assets/Images/Markers/orange_MarkerP.png'
+            icon: '../../assets/Images/Markers/orange_MarkerP.png',
+            markNo : this.potMarkers[i].id,
+            potholeNote: this.potMarkers[i].notes
           })
+
+         // console.log(this.potMarkers[i].id);
+          this.addInfoWindowToMarker(marker);
+      //    this.markers += marker;
+
+         // this.markerCluster = new MarkerClusterer(this.map, marker);
         }
       }); 
+
+     // this.markerCluster = new MarkerClusterer(this.map, this.markers, {imagePath: '../../assets/Images/Markers/MapMarkerJS.png'});
+
+
   }
 
   addNewPotholeMark(){
 
     let latLng = new google.maps.LatLng(this.currentPos.coords.latitude, this.currentPos.coords.longitude);
 
-    let marker2 = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       map: this.map,
       title: 'Pothole',
       animation: google.maps.Animation.DROP,
@@ -160,11 +177,82 @@ export class HomePage {
       icon: '../../assets/Images/Markers/orange_MarkerP.png'
     })
 
-    google.maps.event.addListener(marker2, 'dragend', event => {
+    google.maps.event.addListener(marker, 'dragend', event => {
       this.lat = event.latLng.lat();
       this.long = event.latLng.lng();
 
       this.service.sendPotholeData(this.lat, this.long);
     })  
+
+    this.addInfoWindowToMarker(marker);
+
+  }
+
+  addInfoWindowToMarker(marker)
+  {
+    /**
+     * https://www.christianengvall.se/google-map-marker-infowindow/
+     */
+
+
+    var infoWindowContent = marker.potholeNote + 
+                      '<br> <ion-button button id = "click">Add a note</ion-button>';
+    var infoWindow = new google.maps.InfoWindow({
+      content: infoWindowContent
+    });
+    marker.addListener('click', () => {
+      this.closeAllInfoWindows();
+      infoWindow.open(this.map, marker);
+      console.log(marker.markNo);
+
+      google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+        document.getElementById('click').addEventListener('click', () => {
+        this.saveNote(marker.markNo);
+
+        });
+      });
+    });
+    this.infoWindows.push(infoWindow);
+  }
+
+  closeAllInfoWindows() {
+    for(let window of this.infoWindows) {
+      window.close();
+    }
+  }
+
+  async saveNote(markerNo)
+  {
+    var alert = await this.alertCtrl.create({
+      header: 'Create note',
+      subHeader: 'Enter in details about the pothole',
+      inputs: [
+        {
+          name: 'note',
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Save',
+          handler: data => {
+            console.log(data.note);
+            this.doSomething(markerNo, data.note); //CHANGE NAME OF METHOD
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  doSomething(markerNo, data)
+  {
+    this.service.saveNoteData(markerNo, data);
   }
 }
