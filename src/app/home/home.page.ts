@@ -24,6 +24,7 @@ export class HomePage {
   potMarkers: any;
   markerCluster: any;
   markers :any[];
+  hidden: any;
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -37,6 +38,7 @@ export class HomePage {
 
   ionViewDidEnter(){
     this.getUserPosition();
+    console.log(this.login.loginState);
   }
 
   getUserPosition(){
@@ -194,9 +196,27 @@ export class HomePage {
      * https://www.christianengvall.se/google-map-marker-infowindow/
      */
 
+     var str;
+     
+     if(this.login.loginState)
+     {
+        this.hidden = "";
+     }
+     else{
+       this.hidden = 'style="display:none;"';
+     }
 
-    var infoWindowContent = marker.potholeNote + 
-                      '<br> <ion-button button id = "click">Add a note</ion-button>';
+
+     if(marker.potholeNote == null)
+     {
+        str = ""
+     }
+     else{
+       str = marker.potholeNote;
+     }
+
+    var infoWindowContent = str + 
+                      '<br> <ion-button button id = "click"' + this.hidden + '>Add a note</ion-button>';
     var infoWindow = new google.maps.InfoWindow({
       content: infoWindowContent
     });

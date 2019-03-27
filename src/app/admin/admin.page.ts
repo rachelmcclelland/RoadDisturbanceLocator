@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {DataService} from '../services/data.service';
+import { NavController } from '@ionic/angular'; 
 
 import { LoginService } from '../services/login.service';
 
@@ -10,18 +11,22 @@ import { LoginService } from '../services/login.service';
 })
 export class AdminPage implements OnInit {
 
-  @ViewChild("username") username;
+  name:string = "";
+  pass:string = "";
 
-  @ViewChild("password") password;
-  constructor(private service:DataService, public login:LoginService) { }
+  constructor(private service:DataService, public login:LoginService,
+    public navCtrl: NavController) { 
+  }
 
   ngOnInit() {
   }
 
   signIn(){
-   this.service.validateLogin(this.username, this.password);
-   //this.service.validateLogin(this.username, this.password);
+    console.log(this.name);
+    console.log(this.pass);
+    this.service.validateLogin(this.name, this.pass);
 
-   console.log(this.login.loginState);
+    console.log(this.login.loginState);
+
   }
 }
