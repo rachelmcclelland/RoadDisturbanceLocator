@@ -29,8 +29,8 @@ export class DataService {
       return this.http.get('http://localhost/getPotholeData.php');
     } 
 
-    //method for sending the latitude and longitude of an accident marker placed
-    //by a user, to the MySQL database through the .php file
+    /** method for sending the latitude and longitude of an accident marker placed 
+     * by a user, to the MySQL database through the .php file */
     sendAccidentData(lat : number, long){
         let headers : any = new HttpHeaders({ 'Content-Type': 'application/json' }),
             options : any = { "key" : "create", "latitude" : lat, "longitude" : long },
@@ -89,10 +89,10 @@ export class DataService {
 
     }
 
-    saveNoteData(id, notes)
+    saveNoteData(id, notes, key)
     {
       let headers : any = new HttpHeaders({ 'Content-Type': 'application/json' }),
-          options : any = {"id" : id, "notes" : notes },
+          options : any = {"key": key, "id" : id, "notes" : notes},
           url : any = this.baseURI + "sendNoteData.php";
   
       this.http.post(url, JSON.stringify(options), headers)

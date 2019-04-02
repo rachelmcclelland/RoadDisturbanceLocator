@@ -3,8 +3,9 @@ import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@io
 import { HttpClient} from '@angular/common/http';
 import {DataService} from '../services/data.service';
 import { LoginService } from '../services/login.service';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { AlertController } from '@ionic/angular';
+import * as $ from "jquery";
+import {NavController} from '@ionic/angular';
 
 declare var google;
 
@@ -15,7 +16,6 @@ declare var google;
 })
 export class HomePage {
 
-
   options : GeolocationOptions;
   currentPos : Geoposition;
   lat : any;
@@ -25,13 +25,14 @@ export class HomePage {
   markerCluster: any;
   markers :any[];
   hidden: any;
-
-  @ViewChild('map') mapElement: ElementRef;
   map: any;
   infoWindows: any;
+  isFixed: any;
+
+  @ViewChild('map') mapElement: ElementRef;
 
   constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService, 
-    public login:LoginService, private alertCtrl: AlertController) 
+    public login:LoginService, private alertCtrl: AlertController, private navCtrl:NavController) 
   {
       this.infoWindows = [];
   }
@@ -150,11 +151,18 @@ export class HomePage {
             position: latLng,
             icon: '../../assets/Images/Markers/orange_MarkerP.png',
             markNo : this.potMarkers[i].id,
-            potholeNote: this.potMarkers[i].notes
+            potholeNote: this.potMarkers[i].notes,
+            isFixed: this.potMarkers[i].isFixed
           })
 
          // console.log(this.potMarkers[i].id);
           this.addInfoWindowToMarker(marker);
+
+          if(marker.isFixed == 1)
+          {
+            marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
+          }
+          
       //    this.markers += marker;
 
          // this.markerCluster = new MarkerClusterer(this.map, marker);
@@ -162,6 +170,7 @@ export class HomePage {
       }); 
 
      // this.markerCluster = new MarkerClusterer(this.map, this.markers, {imagePath: '../../assets/Images/Markers/MapMarkerJS.png'});
+
 
 
   }
@@ -195,17 +204,9 @@ export class HomePage {
     /**
      * https://www.christianengvall.se/google-map-marker-infowindow/
      */
-
-     var str;
-     
-     if(this.login.loginState)
-     {
-        this.hidden = "";
-     }
-     else{
-       this.hidden = 'style="display:none;"';
-     }
-
+     var fixed = 0;
+     var str: string;
+     var check: string;
 
      if(marker.potholeNote == null)
      {
@@ -213,6 +214,24 @@ export class HomePage {
      }
      else{
        str = marker.potholeNote;
+     }
+
+     if(this.login.loginState)
+     {
+        this.hidden = "";
+
+        if(marker.isFixed == 1)
+        {
+          check = "checked";
+        }
+        else{
+          check = ""
+        }
+        str += '<br> Fixed: <input type = "checkbox" name = "fixable" value="Fixed" ' + check + '>' +
+                '<ion-button button id = "save">Save</ion-button>';
+     }
+     else{
+       this.hidden = 'style="display:none;"';
      }
 
     var infoWindowContent = str + 
@@ -223,15 +242,36 @@ export class HomePage {
     marker.addListener('click', () => {
       this.closeAllInfoWindows();
       infoWindow.open(this.map, marker);
-      console.log(marker.markNo);
+      console.log(marker.isFixed);
 
       google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-        document.getElementById('click').addEventListener('click', () => {
-        this.saveNote(marker.markNo);
 
-        });
+          //JQUERY
+          $(document).ready(function(){
+            $('input[type=checkbox]').click(function(){
+                if($(this).is(':checked')){
+                // alert($(this).attr('id'));  
+                    //console.log ("checked");
+                    fixed = 1;
+                    
+                }   
+                else {
+                  console.log("unchecked");
+                  fixed = 0;
+                }
+            }); 
+          });
+
+          document.getElementById('save').addEventListener('click', () => {
+            this.updatePotholeDatabase(marker.markNo, fixed);
+          }); //addEventListener
+
+          document.getElementById('click').addEventListener('click', () => {
+            this.saveNote(marker.markNo);
+            });
       });
     });
+
     this.infoWindows.push(infoWindow);
   }
 
@@ -263,7 +303,7 @@ export class HomePage {
           text: 'Save',
           handler: data => {
             console.log(data.note);
-            this.doSomething(markerNo, data.note); //CHANGE NAME OF METHOD
+            this.sendNoteToDatabase(markerNo, data.note);
           }
         }
       ]
@@ -271,8 +311,13 @@ export class HomePage {
     await alert.present();
   }
 
-  doSomething(markerNo, data)
+  sendNoteToDatabase(markerNo, data)
   {
-    this.service.saveNoteData(markerNo, data);
+    this.service.saveNoteData(markerNo, data, "notes");
+  }
+
+  public updatePotholeDatabase(markerNo, fixed)
+  {
+    this.service.saveNoteData(markerNo, fixed, "checkbox");
   }
 }

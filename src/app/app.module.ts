@@ -11,7 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx'; 
 import { HttpClientModule } from '@angular/common/http';
-
+import * as $ from 'jquery';
 import { LoginService } from '../app/services/login.service';
 
 @NgModule({
