@@ -37,7 +37,7 @@ export class HomePage {
       this.infoWindows = [];
   }
 
-  ionViewDidEnter(){
+  ionViewWillEnter(){
     this.getUserPosition();
     console.log(this.login.loginState);
   }
@@ -250,13 +250,9 @@ export class HomePage {
           $(document).ready(function(){
             $('input[type=checkbox]').click(function(){
                 if($(this).is(':checked')){
-                // alert($(this).attr('id'));  
-                    //console.log ("checked");
-                    fixed = 1;
-                    
+                    fixed = 1;                    
                 }   
                 else {
-                  console.log("unchecked");
                   fixed = 0;
                 }
             }); 

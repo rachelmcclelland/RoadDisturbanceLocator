@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation/ngx'; 
 import { Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 import { LoginService } from '../services/login.service';
 import { HomePage } from '../home/home.page';
@@ -16,7 +17,8 @@ export class DataService {
     data2: any;
     state: any;
 
-    constructor(private http: HttpClient, public login: LoginService, public navCtrl: NavController) { }
+    constructor(private http: HttpClient, public login: LoginService, public navCtrl: NavController,
+                    private alertCtrl: AlertController) { }
 
     //return all the accident markers from the MySQL database
     getAccidentMarkers() : Observable<any>{
@@ -81,10 +83,18 @@ export class DataService {
           this.navCtrl.navigateForward('/home');
         // }
       },
-      (error : any) =>
+      async (error : any) =>
       {
         console.log("Invalid username");
         this.login.loginState = false;
+        
+        var alert = await this.alertCtrl.create({
+          header:"Error",
+          subHeader:"Your Login Username or Password is invalid",
+          buttons: ['OK']
+        });
+
+        await alert.present();
       });
 
     }
