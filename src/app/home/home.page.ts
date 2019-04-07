@@ -8,6 +8,7 @@ import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
 
 declare var google;
+declare var MarkerClusterer: any;
 
 @Component({
   selector: 'app-home',
@@ -162,6 +163,41 @@ export class HomePage {
           {
             marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
           }
+
+          new MarkerClusterer(this.map, marker, {
+            styles: [
+              {
+                height: 53,
+                url: "assets/Images/Markers/MapMarkerJS.png",
+                width: 53,
+                textColor: '#fff'
+              },
+              {
+                height: 56,
+                url: "assets/Images/Markers/MapMarkerJS.png",
+                width: 56,
+                textColor: '#fff'
+              },
+              {
+                height: 66,
+                url: "assets/Images/Markers/MapMarkerJS.png",
+                width: 66,
+                textColor: '#fff'
+              },
+              {
+                height: 78,
+                url: "assets/Images/Markers/MapMarkerJS.png",
+                width: 78,
+                textColor: '#fff'
+              },
+              {
+                height: 90,
+                url: "assets/Images/Markers/MapMarkerJS.png",
+                width: 90,
+                textColor: '#fff'
+              }
+            ]
+    });
           
       //    this.markers += marker;
 
