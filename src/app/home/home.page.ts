@@ -22,7 +22,6 @@ export class HomePage {
   long : any;
   accMarkers: any;
   potMarkers: any;
-  markerCluster: any;
   markers :any[];
   hidden: any;
   map: any;
@@ -163,13 +162,9 @@ export class HomePage {
             marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
           }
           
-      //    this.markers += marker;
-
-         // this.markerCluster = new MarkerClusterer(this.map, marker);
         }
       }); 
 
-     // this.markerCluster = new MarkerClusterer(this.map, this.markers, {imagePath: '../../assets/Images/Markers/MapMarkerJS.png'});
 
 
 
