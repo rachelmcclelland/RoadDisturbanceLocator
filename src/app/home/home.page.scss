@@ -19,3 +19,11 @@ ion-img{
   height: 100%;
 }
 
+.filter-button {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  z-index: 999;
+}
+
