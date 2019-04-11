@@ -16,6 +16,7 @@ export class DataService {
     private baseURI : string  = "http://localhost/";
     data2: any;
     state: any;
+    
 
     constructor(private http: HttpClient, public login: LoginService, public navCtrl: NavController,
                     private alertCtrl: AlertController) { }
@@ -23,12 +24,14 @@ export class DataService {
     //return all the accident markers from the MySQL database
     getAccidentMarkers() : Observable<any>{
     
-      return this.http.get('http://localhost/getAccidentData.php');
+      var url = this.baseURI + '/getAccidentData.php'
+      return this.http.get(url);
     }
     
     getPotholeMarkers() : Observable<any>{
     
-      return this.http.get('http://localhost/getPotholeData.php');
+      var url = this.baseURI + '/getPotholeData.php'
+      return this.http.get(url);
     } 
 
     /** method for sending the latitude and longitude of an accident marker placed 

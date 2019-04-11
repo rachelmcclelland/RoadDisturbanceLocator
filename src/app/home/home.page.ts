@@ -8,6 +8,7 @@ import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
 
 declare var google;
+//declare var MarkerCluster: any;
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ export class HomePage {
   long : any;
   accMarkers: any;
   potMarkers: any;
+  markerCluster: any;
   markers :any[];
   hidden: any;
   map: any;
@@ -162,9 +164,9 @@ export class HomePage {
             marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
           }
           
+          this.markers += marker;
         }
       }); 
-
 
 
 
