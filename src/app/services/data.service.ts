@@ -13,8 +13,8 @@ import { HomePage } from '../home/home.page';
 })
 export class DataService {
 
-    //private baseURI : string  = "http://localhost/";
-    private baseURI : string  = "http://34.243.104.27/";
+    private baseURI : string  = "http://localhost/";
+    //private baseURI : string  = "http://34.243.104.27/";
     data2: any;
     state: any;
     

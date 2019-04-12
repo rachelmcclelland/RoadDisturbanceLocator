@@ -75,7 +75,7 @@ export class HomePage {
 
       this.addAccidentMarkers();
 
-      this.addPotholeMarkers();
+      this.addPotholeMarkers(this.map);
 
   }
 
@@ -133,7 +133,7 @@ export class HomePage {
     })  
 }
 
-  addPotholeMarkers()
+  addPotholeMarkers(map)
   {
     this.service.getPotholeMarkers().subscribe(data => 
       {
@@ -168,7 +168,14 @@ export class HomePage {
         }
       }); 
 
+      let clusterOptions = {
+        markers: this.markers,
+        icons: [
+          {min: 2, max: 100, url: "../../assets/Clusters/potholecluster.png", anchor: {x: 16, y: 16}}
+        ]
+      }
 
+      
 
   }
 
