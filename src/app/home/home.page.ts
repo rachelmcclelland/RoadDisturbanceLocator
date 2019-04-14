@@ -341,6 +341,38 @@ export class HomePage {
     if(event.target.checked == false)
     {
         console.log("checked")
+        this.service.viewPotholes2Weeks().subscribe(data => 
+      {
+        this.potMarkers = data;
+        console.dir(this.potMarkers);
+
+        for (let i = 0; i < this.potMarkers.length; i++)
+        {
+          let latLng = new google.maps.LatLng(this.potMarkers[i].latitude, this.potMarkers[i].longitude);
+          
+          let marker = new google.maps.Marker({
+            map: this.map,
+            title: 'Pothole',
+            animation: google.maps.Animation.DROP,
+            draggable:true,
+            position: latLng,
+            icon: '../../assets/Images/Markers/orange_MarkerP.png',
+            markNo : this.potMarkers[i].id,
+            potholeNote: this.potMarkers[i].notes,
+            isFixed: this.potMarkers[i].isFixed
+          })
+
+         // console.log(this.potMarkers[i].id);
+          this.addInfoWindowToMarker(marker);
+
+          if(marker.isFixed == 1)
+          {
+            marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
+          }
+          
+          this.markers += marker;
+        }
+      }); 
     }
     else{
       console.log("not checked")
