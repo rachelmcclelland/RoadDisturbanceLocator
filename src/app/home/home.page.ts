@@ -210,6 +210,10 @@ export class HomePage {
     /**
      * https://www.christianengvall.se/google-map-marker-infowindow/
      */
+
+     // NEEDS TO BE DONE
+     // HAVE THE PREVIOUS SAVED NOTE AS THE PLACEHOLDER
+     // ADD IN A SEARCH FEATURE TO MOVE TO A CERTAIN LOCATION
      var fixed = 0;
      var str: string;
      var check: string;
