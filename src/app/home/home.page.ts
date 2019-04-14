@@ -330,11 +330,12 @@ export class HomePage {
 
     if (element.checked)
     {
-      
-        console.log(" checked")
+      //!! Seems to be backwards, when its checked it is false and when not checked
+      //it works out to be true
+        console.log("not  checked")
     }
     else{
-      console.log(" not checked")
+      console.log("checked")
     }
   }
 }
