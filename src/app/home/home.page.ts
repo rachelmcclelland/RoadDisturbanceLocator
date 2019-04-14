@@ -6,6 +6,7 @@ import { LoginService } from '../services/login.service';
 import { AlertController } from '@ionic/angular';
 import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
+import { isNgTemplate } from '@angular/compiler';
 
 declare var google;
 //declare var MarkerCluster: any;
@@ -29,6 +30,7 @@ export class HomePage {
   map: any;
   infoWindows: any;
   isFixed: any;
+  item: any;
 
   @ViewChild('map') mapElement: ElementRef;
 
@@ -319,5 +321,20 @@ export class HomePage {
   public updatePotholeDatabase(markerNo, fixed)
   {
     this.service.saveNoteData(markerNo, fixed, "checkbox");
+  }
+
+  public toggleCheckbox(){
+
+    console.log("in function")
+    var element = <HTMLInputElement> document.getElementById("potholeCB");
+
+    if (element.checked)
+    {
+      
+        console.log(" checked")
+    }
+    else{
+      console.log(" not checked")
+    }
   }
 }
