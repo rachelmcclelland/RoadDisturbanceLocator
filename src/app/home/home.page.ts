@@ -323,19 +323,27 @@ export class HomePage {
     this.service.saveNoteData(markerNo, fixed, "checkbox");
   }
 
-  public toggleCheckbox(){
+  public toggleCheckbox(event){
 
     console.log("in function")
     var element = <HTMLInputElement> document.getElementById("potholeCB");
 
-    if (element.checked)
+    // if (element.checked)
+    // {
+    //   //!! Seems to be backwards, when its checked it is false and when not checked
+    //   //it works out to be true
+    //     console.log("not  checked")
+    // }
+    // else{
+    //   console.log("checked")
+    // }
+
+    if(event.target.checked == false)
     {
-      //!! Seems to be backwards, when its checked it is false and when not checked
-      //it works out to be true
-        console.log("not  checked")
+        console.log("checked")
     }
     else{
-      console.log("checked")
+      console.log("not checked")
     }
   }
 }

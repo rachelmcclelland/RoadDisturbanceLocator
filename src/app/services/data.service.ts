@@ -31,8 +31,8 @@ export class DataService {
     
     getPotholeMarkers() : Observable<any>{
     
-      var url = this.baseURI + 'getAccidentData.php'
-      return this.http.get('http://localhost/getPotholeData.php');
+      var url = this.baseURI + 'getPotholeData.php'
+      return this.http.get(url);
     } 
 
     /** method for sending the latitude and longitude of an accident marker placed 
@@ -119,4 +119,5 @@ export class DataService {
           console.log(error);
       });
     }
-}
+
+  }
