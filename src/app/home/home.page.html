@@ -15,13 +15,13 @@
 </ion-header>
 
 <ion-content>
-  <ion-list no-lines>
+
+  <div id="floating-panel">
     <ion-item>
       <ion-checkbox color = "primary" id = "potholeCB" (click) = "toggleCheckbox($event)" ></ion-checkbox>
       <img src = "../../assets/Images/Markers/orange_MarkerP.png" title = "View all potholes from the past month">
     </ion-item>
-  </ion-list>
-      <div #map id="map" >
-      </div>
+  </div>
+  <div #map id="map" ></div>
       
 </ion-content>
