@@ -22,19 +22,17 @@ ion-img{
 .toolbar{
   background-color: rgb(238, 232, 232);
   max-height: 5%;
-  
-  
 }
 
 #floating-panel {
   position: absolute;
-  top: 10px;
-  left: 25%;
+  top: 10%;
+  left: 2%;
   z-index: 5;
-  background-color: #fff;
-  border: 1px solid #999;
   text-align: center;
   font-family: 'Roboto','sans-serif';
-  line-height: 30px;
-  padding-left: 10px;
+}
+
+.pMark{
+  height: 50%;
 }
