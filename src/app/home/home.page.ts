@@ -6,7 +6,6 @@ import { LoginService } from '../services/login.service';
 import { AlertController } from '@ionic/angular';
 import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
-import { isNgTemplate } from '@angular/compiler';
 
 declare var google;
 //declare var MarkerCluster: any;
@@ -31,6 +30,7 @@ export class HomePage {
   infoWindows: any;
   isFixed: any;
   item: any;
+  pMarkers: any;
 
   @ViewChild('map') mapElement: ElementRef;
 
@@ -370,12 +370,15 @@ export class HomePage {
             marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
           }
           
-          this.markers += marker;
+          this.pMarkers += marker;
         }
       }); 
     }
     else{
       console.log("not checked")
+      
+      this.ionViewWillEnter()
+    
     }
   }
 }
