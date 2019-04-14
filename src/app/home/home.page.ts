@@ -316,6 +316,7 @@ export class HomePage {
   sendNoteToDatabase(markerNo, data)
   {
     this.service.saveNoteData(markerNo, data, "notes");
+    this.ionViewWillEnter();
   }
 
   public updatePotholeDatabase(markerNo, fixed)
