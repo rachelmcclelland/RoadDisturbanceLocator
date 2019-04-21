@@ -13,6 +13,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HttpClientModule } from '@angular/common/http';
 import * as $ from 'jquery';
 import { LoginService } from '../app/services/login.service';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { LoginService } from '../app/services/login.service';
   ],
   providers: [
     Geolocation,
+    NativeGeocoder,
     StatusBar,
     SplashScreen,
     HttpClientModule,

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation/ngx'; 
 import { HttpClient} from '@angular/common/http';
 import {DataService} from '../services/data.service';
@@ -6,6 +6,11 @@ import { LoginService } from '../services/login.service';
 import { AlertController } from '@ionic/angular';
 import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
+import { GoogleMaps, GoogleMap, Geocoder, GeocoderResult
+} from '@ionic-native/google-maps';
+
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+
 
 declare var google;
 //declare var MarkerCluster: any;
@@ -26,16 +31,27 @@ export class HomePage {
   markerCluster: any;
   markers :any[];
   hidden: any;
-  map: any;
+  map: GoogleMap;
   infoWindows: any;
   isFixed: any;
   item: any;
   pMarkers: any;
 
+  latitude: number;
+  longitude: number;
+  autocompleteService: any;
+  placesService: any;
+  query: string = '';
+  places: any = [];
+  searchDisabled: boolean;
+  saveDisabled: boolean;
+  location: any;  
+
   @ViewChild('map') mapElement: ElementRef;
 
   constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService, 
-    public login:LoginService, private alertCtrl: AlertController, private navCtrl:NavController) 
+    public login:LoginService, private alertCtrl: AlertController, private navCtrl:NavController,
+    public zone: NgZone, private nativeGeocoder: NativeGeocoder ) 
   {
       this.infoWindows = [];
   }
@@ -43,6 +59,10 @@ export class HomePage {
   ionViewWillEnter(){
     this.getUserPosition();
     console.log(this.login.loginState);
+
+   // this.autocompleteService = new google.maps.places.AutocompleteService();
+    // this.placesService = new google.maps.places.PlacesService(this.map);
+    // this.searchDisabled = false;
   }
 
   getUserPosition(){
@@ -386,4 +406,125 @@ export class HomePage {
     
     }
   }
+
+  selectPlace(place){
+
+    console.log("in fucntion with params")
+    console.log(place)
+
+    this.places = [];
+
+    let location = {
+        lat: null,
+        lng: null,
+        name: place.name
+    };
+
+    this.placesService.getDetails({placeId: place.place_id}, (details) => {
+
+        this.zone.run(() => {
+
+            location.name = details.name;
+            location.lat = details.geometry.location.lat();
+            location.lng = details.geometry.location.lng();
+            this.saveDisabled = false;
+
+            let latLng = new google.maps.LatLng(location.lat, location.lng);
+
+            //this.map.center({lat: location.lat, lng: location.lng}); 
+            this.map.setOptions({
+              center: latLng
+            });
+
+            this.location = location;
+
+        });
+
+    });
+
+}
+
+searchPlace(location: string){
+
+  console.log(location)
+
+  // var geocoder = new google.maps.Geocoder();
+
+  //       geocoder.geocode({'address': location}, function(results, status) {
+  //         if (status === 'OK') {
+  //           console.log("here")
+ 
+  //           console.log(results[0].geometry.location)
+
+
+  //           this.map.setCenter(results[0].geometry.location);
+  //           var marker = new google.maps.Marker({
+  //             map: this.map,
+  //             position: results[0].geometry.location
+  //           });
+  //         } else {
+  //           alert('Geocode was not successful for the following reason: ' + status);
+  //         }
+  //       });
+
+
+  let options: NativeGeocoderOptions = {
+    useLocale: true,
+    maxResults: 5
+};
+
+var coordinates;
+
+this.nativeGeocoder.forwardGeocode(location, options)
+  .then((coordinates: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + coordinates[0].latitude + ' and longitude=' + coordinates[0].longitude))
+  .catch((error: any) => console.log(error));
+
+  let latLng = new google.maps.LatLng(coordinates[0].latitude, coordinates[0].longitude);
+  this.map.addMarkerSync({
+    position: latLng,
+    icon:"Red"
+});
+}
+  // .then((results: GeocoderResult[]) => {
+  //   console.log(results[0].position);
+  //   this.map.setCameraTarget(results[0].position);
+  //   this.map.setCameraZoom(10);
+  //   let mark: number = results[0].position.lat;
+  // })
+
+
+  
+    // this.saveDisabled = true;
+
+    // if(this.query.length > 0 && !this.searchDisabled) {
+
+    //     let config = {
+    //         types: ['geocode'],
+    //         input: this.query
+    //     }
+
+    //     this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+
+    //         if(status == google.maps.places.PlacesServiceStatus.OK && predictions){
+
+    //             this.places = [];
+    //             console.log("here")
+    //             predictions.forEach((prediction) => {
+    //                 this.places.push(prediction);
+    //             });
+    //         }
+
+    //     });
+
+    // } else {
+    //     this.places = [];
+    // }
+
+// save(){
+//     this.viewCtrl.dismiss(this.location);
+// }
+
+// close(){
+//     this.viewCtrl.dismiss();
+// }  
 }
