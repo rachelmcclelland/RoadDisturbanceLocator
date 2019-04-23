@@ -6,7 +6,8 @@ import { LoginService } from '../services/login.service';
 import { AlertController } from '@ionic/angular';
 import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
-import { GoogleMaps, GoogleMap, Geocoder, GeocoderResult
+import { GoogleMaps, GoogleMap, Geocoder, GeocoderResult, 
+  CameraPosition, MarkerCluster
 } from '@ionic-native/google-maps';
 
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
@@ -196,6 +197,7 @@ export class HomePage {
           {min: 2, max: 100, url: "../../assets/Clusters/potholecluster.png", anchor: {x: 16, y: 16}}
         ]
       }
+     // var markerCluster = new MarkerCluster(map, clusterOptions);
 
       
 
@@ -366,6 +368,7 @@ export class HomePage {
     if(event.target.checked == false)
     {
         console.log("checked")
+        //this.map.clear(); DOESNT WORK
         this.service.viewPotholes2Weeks().subscribe(data => 
       {
         this.potMarkers = data;
@@ -446,85 +449,51 @@ export class HomePage {
 
 searchPlace(location: string){
 
+  let lat: any;
+  let long: any;
   console.log(location)
 
-  // var geocoder = new google.maps.Geocoder();
+  var geocoder = new google.maps.Geocoder();
 
-  //       geocoder.geocode({'address': location}, function(results, status) {
-  //         if (status === 'OK') {
-  //           console.log("here")
+        geocoder.geocode({'address': location}, function(results, status) {
+          if (status === 'OK') {
+            console.log("here")
  
-  //           console.log(results[0].geometry.location)
+            console.log(results)
+            
+            console.log(results[0].geometry.location.lat())
+            lat = results[0].geometry.location.lat()
 
+            console.log(results[0].geometry.location.lng())
+            long = results[0].geometry.location.lng()
 
-  //           this.map.setCenter(results[0].geometry.location);
-  //           var marker = new google.maps.Marker({
-  //             map: this.map,
-  //             position: results[0].geometry.location
-  //           });
-  //         } else {
-  //           alert('Geocode was not successful for the following reason: ' + status);
-  //         }
-  //       });
+            
+          //    this.map.setCameraTarget(results[0].geometry.location) ;
+          //   this.map.setOptions.centre = latLng;
+       
+          
 
+          
 
-  let options: NativeGeocoderOptions = {
-    useLocale: true,
-    maxResults: 5
-};
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
 
-var coordinates;
+        if(status == "OK")
+        {
+          let latLng = new google.maps.LatLng(lat, long);
 
-this.nativeGeocoder.forwardGeocode(location, options)
-  .then((coordinates: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + coordinates[0].latitude + ' and longitude=' + coordinates[0].longitude))
-  .catch((error: any) => console.log(error));
+          let options = {
+            'target': latLng,
+            'zoom': 10
+          }
+          console.log("in here")
+          this.map.animateCamera(options), function(){
+            console.log("trying to move camera")
+          }
+        }
 
-  let latLng = new google.maps.LatLng(coordinates[0].latitude, coordinates[0].longitude);
-  this.map.addMarkerSync({
-    position: latLng,
-    icon:"Red"
-});
-}
-  // .then((results: GeocoderResult[]) => {
-  //   console.log(results[0].position);
-  //   this.map.setCameraTarget(results[0].position);
-  //   this.map.setCameraZoom(10);
-  //   let mark: number = results[0].position.lat;
-  // })
+      }
 
-
-  
-    // this.saveDisabled = true;
-
-    // if(this.query.length > 0 && !this.searchDisabled) {
-
-    //     let config = {
-    //         types: ['geocode'],
-    //         input: this.query
-    //     }
-
-    //     this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-
-    //         if(status == google.maps.places.PlacesServiceStatus.OK && predictions){
-
-    //             this.places = [];
-    //             console.log("here")
-    //             predictions.forEach((prediction) => {
-    //                 this.places.push(prediction);
-    //             });
-    //         }
-
-    //     });
-
-    // } else {
-    //     this.places = [];
-    // }
-
-// save(){
-//     this.viewCtrl.dismiss(this.location);
-// }
-
-// close(){
-//     this.viewCtrl.dismiss();
-// }  
 }
