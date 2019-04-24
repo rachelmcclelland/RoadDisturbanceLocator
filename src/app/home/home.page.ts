@@ -52,7 +52,7 @@ export class HomePage {
 
   constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService, 
     public login:LoginService, private alertCtrl: AlertController, private navCtrl:NavController,
-    public zone: NgZone, private nativeGeocoder: NativeGeocoder ) 
+    public zone: NgZone) 
   {
       this.infoWindows = [];
   }
@@ -278,6 +278,7 @@ export class HomePage {
 
       google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
 
+        try{
           //JQUERY
           $(document).ready(function(){
             $('input[type=checkbox]').click(function(){
@@ -297,6 +298,10 @@ export class HomePage {
           document.getElementById('click').addEventListener('click', () => {
             this.saveNote(marker.markNo);
             });
+        }
+        catch{
+          //do nothing
+        }
       });
     });
 
@@ -353,22 +358,12 @@ export class HomePage {
   public toggleCheckbox(event){
 
     console.log("in function")
-    var element = <HTMLInputElement> document.getElementById("potholeCB");
-
-    // if (element.checked)
-    // {
-    //   //!! Seems to be backwards, when its checked it is false and when not checked
-    //   //it works out to be true
-    //     console.log("not  checked")
-    // }
-    // else{
-    //   console.log("checked")
-    // }
 
     if(event.target.checked == false)
     {
         console.log("checked")
-        //this.map.clear(); DOESNT WORK
+        
+
         this.service.viewPotholes2Weeks().subscribe(data => 
       {
         this.potMarkers = data;
@@ -390,7 +385,6 @@ export class HomePage {
             isFixed: this.potMarkers[i].isFixed
           })
 
-         // console.log(this.potMarkers[i].id);
           this.addInfoWindowToMarker(marker);
 
           if(marker.isFixed == 1)
@@ -470,18 +464,7 @@ searchPlace(location: string){
             
           //    this.map.setCameraTarget(results[0].geometry.location) ;
           //   this.map.setOptions.centre = latLng;
-       
-          
 
-          
-
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-
-        if(status == "OK")
-        {
           let latLng = new google.maps.LatLng(lat, long);
 
           let options = {
@@ -489,10 +472,14 @@ searchPlace(location: string){
             'zoom': 10
           }
           console.log("in here")
-          this.map.animateCamera(options), function(){
+          this.map.moveCamera(options), function(){
             console.log("trying to move camera")
           }
-        }
+
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
 
       }
 
