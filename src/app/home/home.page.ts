@@ -33,6 +33,7 @@ export class HomePage {
   item: any;
   pMarkers: any;
 
+  autocomplete:any;
   latitude: number;
   longitude: number;
   autocompleteService: any;
@@ -55,10 +56,6 @@ export class HomePage {
   ionViewWillEnter(){
     this.getUserPosition();
     console.log(this.login.loginState);
-
-   // this.autocompleteService = new google.maps.places.AutocompleteService();
-    // this.placesService = new google.maps.places.PlacesService(this.map);
-    // this.searchDisabled = false;
   }
 
   getUserPosition(){
@@ -356,6 +353,7 @@ export class HomePage {
 
     if(event.target.checked == false)
     {
+
         console.log("checked")
         
 
@@ -387,9 +385,8 @@ export class HomePage {
     }
   }
 
-  selectPlace(place){
+/* selectPlace(place){
 
-    console.log("in fucntion with params")
     console.log(place)
 
     this.places = [];
@@ -423,7 +420,7 @@ export class HomePage {
     });
 
 }
-
+ */
 searchPlace(location: string){
 
   let lat: any;
@@ -445,19 +442,10 @@ searchPlace(location: string){
             long = results[0].geometry.location.lng()
 
             
-          //    this.map.setCameraTarget(results[0].geometry.location) ;
-          //   this.map.setOptions.centre = latLng;
-
-          let latLng = new google.maps.LatLng(lat, long);
-
-          let options = {
-            'target': latLng,
-            'zoom': 10
-          }
-          console.log("in here")
-          this.map.moveCamera(options), function(){
-            console.log("trying to move camera")
-          }
+            var map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: lat, lng: long},
+              zoom: 14
+            });
 
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
