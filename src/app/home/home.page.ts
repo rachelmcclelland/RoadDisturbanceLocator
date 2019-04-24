@@ -76,7 +76,7 @@ export class HomePage {
     });
   }// getUserPosition
 
-  loadMap(lat, long){
+  public loadMap(lat, long){
  
       let latLng = new google.maps.LatLng(lat, long);
 
@@ -112,7 +112,7 @@ export class HomePage {
     });
   }// addUserMarker
 
-  addAccidentMarkers(){
+  public addAccidentMarkers(){
     //this method goes out to the service to get all the accident
     // markers that are currently in the database
     this.service.getAccidentMarkers().subscribe(data => 
@@ -138,7 +138,7 @@ export class HomePage {
       }); 
   }// addAccidentMarkers
 
-  addNewAccidentMark(){
+  public addNewAccidentMark(){
     // this method if fired when the user clicks on the accident marker button
     // on the map which will allow the user to add another marker to the database
     let latLng = new google.maps.LatLng(this.currentPos.coords.latitude, this.currentPos.coords.longitude);
@@ -163,7 +163,7 @@ export class HomePage {
     })  
 }// addNewAccidentMarker
 
-  addPotholeMarkers(map)
+  public addPotholeMarkers(map)
   {
     // this method works the same as the addAccidentMarkers
     this.service.getPotholeMarkers().subscribe(data => 
@@ -437,10 +437,11 @@ export class HomePage {
 }
  */
 
- searchPlace(location: string){
+ async searchPlace(location: string){
 
   let lat: any;
   let long: any;
+  let num : any = 0;
   console.log(location)
 
   // use Geocoder to get the lat and long of the address that the
@@ -450,24 +451,28 @@ export class HomePage {
         geocoder.geocode({'address': location}, function(results, status) {
           if (status === 'OK') {
  
+            console.log("here")
             console.log(results)
             
+            num = 1;
             console.log(results[0].geometry.location.lat())
             lat = results[0].geometry.location.lat()
 
             console.log(results[0].geometry.location.lng())
             long = results[0].geometry.location.lng()
 
-            //move the map to the location the user has entered
+            // move the map to the location the user has entered
             var map = new google.maps.Map(document.getElementById('map'), {
               center: {lat: lat, lng: long},
               zoom: 14
             });
+            
 
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
+console.log(num)
 
 }// searchPlace
 
