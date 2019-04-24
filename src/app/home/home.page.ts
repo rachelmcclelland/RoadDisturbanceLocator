@@ -437,7 +437,7 @@ export class HomePage {
 }
  */
 
- async searchPlace(location: string){
+searchPlace(location: string){
 
   let lat: any;
   let long: any;
@@ -472,7 +472,6 @@ export class HomePage {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
-console.log(num)
 
 }// searchPlace
 
