@@ -18,6 +18,7 @@ declare var google;
 })
 export class HomePage {
 
+  // variables used throughout the file
   options : GeolocationOptions;
   currentPos : Geoposition;
   lat : any;
@@ -46,19 +47,20 @@ export class HomePage {
 
   @ViewChild('map') mapElement: ElementRef;
 
+  //constructor
   constructor(public geolocation: Geolocation, public http: HttpClient, private service:DataService, 
-    public login:LoginService, private alertCtrl: AlertController, private navCtrl:NavController,
-    public zone: NgZone) 
+    public login:LoginService, private alertCtrl: AlertController, public zone: NgZone) 
   {
       this.infoWindows = [];
   }
 
   ionViewWillEnter(){
-    this.getUserPosition();
+    this.getUserPosition(); 
     console.log(this.login.loginState);
-  }
+  } //ionViewWillEnter
 
   getUserPosition(){
+    // this method will find the users position on the map
     this.options = {
         enableHighAccuracy : true
     };
@@ -72,7 +74,7 @@ export class HomePage {
     },(err : PositionError)=>{
         console.log("error : " + err.message);
     });
-  }
+  }// getUserPosition
 
   loadMap(lat, long){
  
@@ -84,18 +86,22 @@ export class HomePage {
         mapTypeId: google.maps.MapTypeId.ROADMAP //road style map
       }
 
+      // create a new instance of google maps
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
+      // add markers to the map with these methods
       this.addUserMarker(lat, long);
 
       this.addAccidentMarkers();
 
       this.addPotholeMarkers(this.map);
 
-  }
+  }// loadMap
 
   public addUserMarker(lat: number, lng: number): void {
 
+    // this method will add a marker for the users position using the latitude
+    // and longitude from the getUserPosition method
     let latLng = new google.maps.LatLng(lat, lng);
 
     let marker = new google.maps.Marker({
@@ -104,14 +110,18 @@ export class HomePage {
         position: latLng,
         title: 'Your location'
     });
-  }
+  }// addUserMarker
 
   addAccidentMarkers(){
+    //this method goes out to the service to get all the accident
+    // markers that are currently in the database
     this.service.getAccidentMarkers().subscribe(data => 
       {
         this.accMarkers = data;
         console.dir(this.accMarkers);
 
+        // loop through all the markers and create a new accident marker
+        // based on the lat and long of each of them
         for (let i = 0; i < this.accMarkers.length; i++)
         {
           let latLng = new google.maps.LatLng(this.accMarkers[i].latitude, this.accMarkers[i].longitude);
@@ -122,34 +132,40 @@ export class HomePage {
             animation: google.maps.Animation.DROP,
             draggable:true,
             position: latLng,
-            icon: '../../assets/Images/Markers/yellow_MarkerA.png'
+            icon: '../../assets/Images/Markers/yellow_MarkerA.png' 
           })
         }
       }); 
-  }
+  }// addAccidentMarkers
 
   addNewAccidentMark(){
+    // this method if fired when the user clicks on the accident marker button
+    // on the map which will allow the user to add another marker to the database
     let latLng = new google.maps.LatLng(this.currentPos.coords.latitude, this.currentPos.coords.longitude);
 
+    //create the marker
     let marker2 = new google.maps.Marker({
       map: this.map,
       title: 'Accident',
       animation: google.maps.Animation.DROP,
-      draggable:true,
+      draggable:true, //allow it to be draggable so the user can move it to the location they want
       position: latLng,
       icon: '../../assets/Images/Markers/yellow_MarkerA.png'
     })
   
+    // once the user has finished dragging it, get the position of the marker and
+    // send it to the service to be saved in the database
     google.maps.event.addListener(marker2, 'dragend', event => {
       this.lat = event.latLng.lat();
       this.long = event.latLng.lng();
 
       this.service.sendAccidentData(this.lat, this.long);
     })  
-}
+}// addNewAccidentMarker
 
   addPotholeMarkers(map)
   {
+    // this method works the same as the addAccidentMarkers
     this.service.getPotholeMarkers().subscribe(data => 
       {
         this.potMarkers = data;
@@ -166,14 +182,16 @@ export class HomePage {
             draggable:true,
             position: latLng,
             icon: '../../assets/Images/Markers/orange_MarkerP.png',
-            markNo : this.potMarkers[i].id,
-            potholeNote: this.potMarkers[i].notes,
-            isFixed: this.potMarkers[i].isFixed
+            markNo : this.potMarkers[i].id, // the id of each marker
+            potholeNote: this.potMarkers[i].notes, // notes that will be displayed in info window
+            isFixed: this.potMarkers[i].isFixed // if its fixed or not (the checkbox on info window)
           })
 
-         // console.log(this.potMarkers[i].id);
+          //pass each marker into the this method to add an info window
           this.addInfoWindowToMarker(marker);
 
+          // if the marker was previouslt checked that is was fixed, change the image to
+          // be a green marker
           if(marker.isFixed == 1)
           {
             marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
@@ -183,6 +201,7 @@ export class HomePage {
         }
       }); 
 
+      // NOT WORKING
       let clusterOptions = {
         markers: this.markers,
         icons: [
@@ -190,13 +209,11 @@ export class HomePage {
         ]
       }
      // var markerCluster = new MarkerCluster(map, clusterOptions);
-
-      
-
-  }
+  }// addPotholeMarkers
 
   addNewPotholeMark(){
 
+    //this method works the same as the addNewAccidentMark
     let latLng = new google.maps.LatLng(this.currentPos.coords.latitude, this.currentPos.coords.longitude);
 
     let marker = new google.maps.Marker({
@@ -217,7 +234,7 @@ export class HomePage {
 
     this.addInfoWindowToMarker(marker);
 
-  }
+  }// addNewPotholeMark
 
   addInfoWindowToMarker(marker)
   {
@@ -225,13 +242,11 @@ export class HomePage {
      * https://www.christianengvall.se/google-map-marker-infowindow/
      */
 
-     // NEEDS TO BE DONE
-     // HAVE THE PREVIOUS SAVED NOTE AS THE PLACEHOLDER
-     // ADD IN A SEARCH FEATURE TO MOVE TO A CERTAIN LOCATION
      var fixed = 0;
      var str: string;
      var check: string;
 
+     // leave blank if no note
      if(marker.potholeNote == null)
      {
         str = ""
@@ -240,8 +255,10 @@ export class HomePage {
        str = marker.potholeNote;
      }
 
+     // hide edit button if admin is not logged in
      if(this.login.loginState)
      {
+       //if logged in, user can see checkbox for fixing pothole
         this.hidden = "";
 
         if(marker.isFixed == 1)
@@ -251,10 +268,11 @@ export class HomePage {
         else{
           check = ""
         }
+
         str += '<br> Fixed: <input type = "checkbox" name = "fixable" value="Fixed" ' + check + '>' +
                 '<ion-button button id = "save">Save</ion-button>';
      }
-     else{
+     else{ // else hide it
        this.hidden = 'style="display:none;"';
      }
 
@@ -264,9 +282,8 @@ export class HomePage {
       content: infoWindowContent
     });
     marker.addListener('click', () => {
-      this.closeAllInfoWindows();
-      infoWindow.open(this.map, marker);
-      console.log(marker.isFixed);
+      this.closeAllInfoWindows(); // close other info windows when user clicks on a marker
+      infoWindow.open(this.map, marker); //open certain markers info window
 
       google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
 
@@ -283,6 +300,7 @@ export class HomePage {
             }); 
           });
 
+          //update the pothole in the database for whether the pothole is fixed or not
           document.getElementById('save').addEventListener('click', () => {
             this.updatePotholeDatabase(marker.markNo, fixed);
           }); //addEventListener
@@ -298,22 +316,24 @@ export class HomePage {
     });
 
     this.infoWindows.push(infoWindow);
-  }
+  }// addInfoWindowToMarker
 
   closeAllInfoWindows() {
     for(let window of this.infoWindows) {
       window.close();
     }
-  }
+  }// closeAllInfoWindows
 
   async saveNote(markerNo)
   {
+    // this method is used to create a pop up box so the user can 
+    // edit the note of a pothole
     var alert = await this.alertCtrl.create({
       header: 'Create note',
       subHeader: 'Enter in details about the pothole',
       inputs: [
         {
-          name: 'note',
+          name: 'note'
         }
       ],
       buttons: [
@@ -328,35 +348,32 @@ export class HomePage {
           text: 'Save',
           handler: data => {
             console.log(data.note);
+            //send the note to the database to be saved with the pothole
             this.sendNoteToDatabase(markerNo, data.note);
           }
         }
       ]
     });
     await alert.present();
-  }
+  }// saveNote
 
   sendNoteToDatabase(markerNo, data)
   {
     this.service.saveNoteData(markerNo, data, "notes");
     this.ionViewWillEnter();
-  }
+  }//sendNoteToDatabase
 
   public updatePotholeDatabase(markerNo, fixed)
   {
     this.service.saveNoteData(markerNo, fixed, "checkbox");
-  }
+  }// updatePotholeDatabase
 
   public toggleCheckbox(event){
 
-    console.log("in function")
-
+    //if the user clicks on the checkbox on the map, display all 
+    // accident markers for the past two weeks
     if(event.target.checked == false)
     {
-
-        console.log("checked")
-        
-
         this.service.viewAccidents2Weeks().subscribe(data => 
       {
         this.accMarkers = data;
@@ -378,12 +395,10 @@ export class HomePage {
       }); 
     }
     else{
-      console.log("not checked")
-      
+      //reload the map
       this.ionViewWillEnter()
-    
     }
-  }
+  }// toggleCheckbox
 
 /* selectPlace(place){
 
@@ -421,17 +436,19 @@ export class HomePage {
 
 }
  */
-searchPlace(location: string){
+
+ searchPlace(location: string){
 
   let lat: any;
   let long: any;
   console.log(location)
 
+  // use Geocoder to get the lat and long of the address that the
+  // user has entered
   var geocoder = new google.maps.Geocoder();
-
+  
         geocoder.geocode({'address': location}, function(results, status) {
           if (status === 'OK') {
-            console.log("here")
  
             console.log(results)
             
@@ -441,7 +458,7 @@ searchPlace(location: string){
             console.log(results[0].geometry.location.lng())
             long = results[0].geometry.location.lng()
 
-            
+            //move the map to the location the user has entered
             var map = new google.maps.Map(document.getElementById('map'), {
               center: {lat: lat, lng: long},
               zoom: 14
@@ -452,6 +469,6 @@ searchPlace(location: string){
           }
         });
 
-      }
+}// searchPlace
 
 }

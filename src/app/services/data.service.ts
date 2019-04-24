@@ -27,13 +27,14 @@ export class DataService {
     
       var url = this.baseURI + 'getAccidentData.php'
       return this.http.get(url);
-    }
+    }// getAccidentMarkers
     
+    //return all pothole from the database
     getPotholeMarkers() : Observable<any>{
     
       var url = this.baseURI + 'getPotholeData.php'
       return this.http.get(url);
-    } 
+    } //getPotholeMarkers
 
     /** method for sending the latitude and longitude of an accident marker placed 
      * by a user, to the MySQL database through the .php file */
@@ -51,7 +52,7 @@ export class DataService {
         {
             console.log(error);
         });
-    }
+    }// sendAccidentData
 
     //method for sending the latitude and longitude of each pothole marker creater,
     //to the MySQL database to be saved 
@@ -69,8 +70,10 @@ export class DataService {
       {
           console.log(error);
       });
-    }
+    }// sendPotholeData
 
+    //send the username and password to the database to be compared against
+    // the username and password in the database
     validateLogin(username: any, password: any){
       let headers : any = new HttpHeaders({ 'Content-Type': 'application/json' }),
         options : any = {"username" : username, "password" : password },
@@ -85,10 +88,10 @@ export class DataService {
         this.login.loginState = true;
 
           this.navCtrl.navigateForward('/home');
-        // }
       },
       async (error : any) =>
       {
+        // display error message if the username and password does not match
         console.log("Invalid username");
         this.login.loginState = false;
         
@@ -101,10 +104,12 @@ export class DataService {
         await alert.present();
       });
 
-    }
+    } //validateLogin
 
     saveNoteData(id, notes, key)
     {
+      //save the note from the pothole into the database with the corresponding
+      // pothole in the database
       let headers : any = new HttpHeaders({ 'Content-Type': 'application/json' }),
           options : any = {"key": key, "id" : id, "notes" : notes},
           url : any = this.baseURI + "sendNoteData.php";
@@ -118,11 +123,15 @@ export class DataService {
       {
           console.log(error);
       });
-    }
+    }// saveNoteData
 
+    /**
+     * This method is used with the checkbox to get the accident markers
+     * in the database from the last two weeks
+     */
     viewAccidents2Weeks() : Observable<any>
     {
       var url = this.baseURI + 'viewAccidents2weeks.php'
       return this.http.get(url);
-    }
+    }// viewAccident2Weeks
 }
