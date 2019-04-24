@@ -6,12 +6,7 @@ import { LoginService } from '../services/login.service';
 import { AlertController } from '@ionic/angular';
 import * as $ from "jquery";
 import {NavController} from '@ionic/angular';
-import { GoogleMaps, GoogleMap, Geocoder, GeocoderResult, 
-  CameraPosition, MarkerCluster
-} from '@ionic-native/google-maps';
-
-import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-
+import { GoogleMap} from '@ionic-native/google-maps';
 
 declare var google;
 //declare var MarkerCluster: any;
@@ -364,35 +359,23 @@ export class HomePage {
         console.log("checked")
         
 
-        this.service.viewPotholes2Weeks().subscribe(data => 
+        this.service.viewAccidents2Weeks().subscribe(data => 
       {
-        this.potMarkers = data;
-        console.dir(this.potMarkers);
+        this.accMarkers = data;
+        console.dir(this.accMarkers);
 
-        for (let i = 0; i < this.potMarkers.length; i++)
+        for (let i = 0; i < this.accMarkers.length; i++)
         {
-          let latLng = new google.maps.LatLng(this.potMarkers[i].latitude, this.potMarkers[i].longitude);
+          let latLng = new google.maps.LatLng(this.accMarkers[i].latitude, this.accMarkers[i].longitude);
           
           let marker = new google.maps.Marker({
             map: this.map,
-            title: 'Pothole',
+            title: 'Accident',
             animation: google.maps.Animation.DROP,
             draggable:true,
             position: latLng,
-            icon: '../../assets/Images/Markers/orange_MarkerP.png',
-            markNo : this.potMarkers[i].id,
-            potholeNote: this.potMarkers[i].notes,
-            isFixed: this.potMarkers[i].isFixed
+            icon: '../../assets/Images/Markers/yellow_MarkerA.png'
           })
-
-          this.addInfoWindowToMarker(marker);
-
-          if(marker.isFixed == 1)
-          {
-            marker.icon = '../../assets/Images/Markers/green_MarkerP.png'
-          }
-          
-          this.pMarkers += marker;
         }
       }); 
     }

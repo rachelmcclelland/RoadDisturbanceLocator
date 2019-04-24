@@ -120,9 +120,9 @@ export class DataService {
       });
     }
 
-    viewPotholes2Weeks() : Observable<any>
+    viewAccidents2Weeks() : Observable<any>
     {
-      var url = this.baseURI + 'viewPotholes2weeks.php'
+      var url = this.baseURI + 'viewAccidents2weeks.php'
       return this.http.get(url);
     }
 }
