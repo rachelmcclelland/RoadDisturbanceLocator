@@ -19,6 +19,11 @@ export class AppComponent {
       title: 'Admin',
       url: '/admin',
       icon: 'log-in'
+    },
+    {
+      title: 'About',
+      url: '/about',
+      icon: 'help'
     }
   ];
 

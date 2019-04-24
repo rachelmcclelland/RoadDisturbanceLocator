@@ -1,9 +1,45 @@
 <ion-header>
   <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
     <ion-title>About</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
+  <div id = "about">
+    <p>
+        This app helps to find out if there are dangerous potholes or major potholes nearby.
+    </p>
+
+    <h3>Accidents</h3>
+      <p>Accidents are found by looking for yellow markers with an 'A' on them.
+        You can add a new accident to the map by clicking on the accident marker in the
+        top right hand corner. Once clicked, a marker will appear on your location which then
+        can be dragged to the desired location. This markers are only visible for one hour.
+        You can view all accident markers from the past two weeks by clicking on the check box
+        in the top left hand corner of the map.
+      </p>
+
+      <h3>Potholes</h3>
+      <p>Potholes work the same as accident. The marker can also be found in the top left hand
+        corner. It is a orange marker with the letter 'P' on it. Pothole markers can have information
+        windows on them, which may display information about the pothole. Only admin can alter this
+        information.</p>
+      <p>There can also be fixed pothole markers on the map. These are green markers with the letter
+        'P' on them. This means that the pothole is fixed and not dangerous any more.
+      </p>
+
+      <h3>Search Bar</h3>
+      <p>If you would like to see potholes or accidents that may be in a different location than 
+        where you currently are, you can search using the search bar at the top of the screen. Please 
+        enter in the address you would like to search, such as "Galway, Ireland" and then click "GO". 
+        This will bring you over to Galway.
+      </p>
+
+      <h4>Thank you for downloading the App!</h4>
+  </div>
+
 
 </ion-content>
